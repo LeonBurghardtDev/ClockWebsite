@@ -40,6 +40,24 @@ function updateWeather() {
     xhr.send();
 }
 
+document.getElementById('fullscreen-button').addEventListener('click', function () {
+    var element = document.documentElement;
+    if (element.requestFullscreen) {
+        element.requestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+    } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+    }
+
+    document.getElementById('fullscreen-button').style.display = 'none';
+});
+document.querySelector('.container').addEventListener('click', function () {
+    toggleFullscreen();
+});
+
 function getWeatherDescription(weatherCode) {
     var weatherCodes = {
         0: 'Klarer Himmel',
