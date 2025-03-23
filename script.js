@@ -1,45 +1,47 @@
-const clockElement = document.getElementById('clock');
-const dateElement = document.getElementById('date');
-const weatherElement = document.getElementById('weather');
+var clockElement = document.getElementById('clock');
+var dateElement = document.getElementById('date');
+var weatherElement = document.getElementById('weather');
 
 function updateTime() {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+    var now = new Date();
+    var hours = String(now.getHours()).padStart(2, '0');
+    var minutes = String(now.getMinutes()).padStart(2, '0');
+    var seconds = String(now.getSeconds()).padStart(2, '0');
+    clockElement.textContent = hours + ':' + minutes + ':' + seconds;
 }
 
 function updateDate() {
-    const now = new Date();
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    var now = new Date();
+    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     dateElement.textContent = now.toLocaleDateString('de-DE', options);
 }
 
-async function updateWeather() {
-    const latitude = 51.4818; 
-    const longitude = 7.2162; 
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
+function updateWeather() {
+    var latitude = 51.4818; 
+    var longitude = 7.2162; 
+    var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + latitude + '&longitude=' + longitude + '&current_weather=true';
 
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            var temp = Math.round(data.current_weather.temperature);
+            var weatherCode = data.current_weather.weathercode;
+            var weatherDescription = getWeatherDescription(weatherCode);
+            weatherElement.textContent = temp + '°C, ' + weatherDescription;
+        } else {
+            weatherElement.textContent = 'Wetterdaten nicht verfügbar';
         }
-        const data = await response.json();
-        const temp = Math.round(data.current_weather.temperature);
-        const weatherCode = data.current_weather.weathercode;
-
-        const weatherDescription = getWeatherDescription(weatherCode);
-        weatherElement.textContent = `${temp}°C, ${weatherDescription}`;
-    } catch (error) {
-        console.error('Error fetching weather data:', error);
-        weatherElement.textContent = 'Wetterdaten nicht verfügbar';
-    }
+    };
+    xhr.onerror = function () {
+        weatherElement.textContent = 'Fehler beim Abrufen der Wetterdaten';
+    };
+    xhr.send();
 }
 
 function getWeatherDescription(weatherCode) {
-    const weatherCodes = {
+    var weatherCodes = {
         0: 'Klarer Himmel',
         1: 'Überwiegend klar',
         2: 'Teilweise bewölkt',
@@ -77,6 +79,9 @@ function updateAll() {
     updateDate();
 }
 
-setInterval(updateAll, 1000);
+updateAll();
 updateWeather();
+
+setInterval(updateAll, 1000);
+
 setInterval(updateWeather, 600000);
