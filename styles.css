@@ -35,19 +35,19 @@ body {
 }
 
 #clock {
-    font-size: 5rem;
+    font-size: 14rem;
     font-weight: bold;
     transition: filter 0.3s;
 }
 
 #date {
-    font-size: 2rem;
+    font-size: 7rem;
     margin-top: 20px;
     transition: filter 0.3s;
 }
 
 #weather {
-    font-size: 1.5rem;
+    font-size: 4.5rem;
     margin-top: 20px;
     transition: filter 0.3s;
 }
