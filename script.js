@@ -1,7 +1,9 @@
-var clockElement = document.getElementById('clock');
-var dateElement = document.getElementById('date');
-var weatherElement = document.getElementById('weather');
-
+const brightnessSlider = document.getElementById('brightness-slider');
+const fullscreenButton = document.getElementById('fullscreen-button');
+const clockElement = document.getElementById('clock');
+const dateElement = document.getElementById('date');
+const weatherElement = document.getElementById('weather');
+const elements = [clockElement, dateElement, weatherElement];
 function updateTime() {
     var now = new Date();
     var hours = String(now.getHours()).padStart(2, '0');
@@ -40,6 +42,13 @@ function updateWeather() {
     xhr.send();
 }
 
+brightnessSlider.addEventListener('input', function() {
+    const brightness = this.value;
+    elements.forEach(el => {
+        el.style.filter = `brightness(${brightness})`;
+    });
+})
+
 document.getElementById('fullscreen-button').addEventListener('click', function () {
     var element = document.documentElement;
     if (element.requestFullscreen) {
@@ -53,6 +62,7 @@ document.getElementById('fullscreen-button').addEventListener('click', function 
     }
 
     document.getElementById('fullscreen-button').style.display = 'none';
+    document.getElementById('brightness-slider').style.display = 'none';
 });
 document.querySelector('.container').addEventListener('click', function () {
     toggleFullscreen();
