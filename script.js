@@ -4,6 +4,7 @@ const clockElement = document.getElementById('clock');
 const dateElement = document.getElementById('date');
 const weatherElement = document.getElementById('weather');
 const elements = [clockElement, dateElement, weatherElement];
+
 function updateTime() {
     var now = new Date();
     var hours = String(now.getHours()).padStart(2, '0');
@@ -19,8 +20,8 @@ function updateDate() {
 }
 
 function updateWeather() {
-    var latitude = 51.4818; 
-    var longitude = 7.2162; 
+    var latitude = 51.4818;
+    var longitude = 7.2162;
     var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + latitude + '&longitude=' + longitude + '&current_weather=true';
 
     var xhr = new XMLHttpRequest();
@@ -42,12 +43,13 @@ function updateWeather() {
     xhr.send();
 }
 
-brightnessSlider.addEventListener('input', function() {
-    const brightness = this.value;
+function autoAdjustBrightness() {
+    var hour = new Date().getHours();
+    var brightness = (hour >= 6 && hour < 22) ? 1 : 0.2;
     elements.forEach(el => {
         el.style.filter = `brightness(${brightness})`;
     });
-})
+}
 
 document.getElementById('fullscreen-button').addEventListener('click', function () {
     var element = document.documentElement;
@@ -64,6 +66,7 @@ document.getElementById('fullscreen-button').addEventListener('click', function 
     document.getElementById('fullscreen-button').style.display = 'none';
     document.getElementById('brightness-slider').style.display = 'none';
 });
+
 document.querySelector('.container').addEventListener('click', function () {
     toggleFullscreen();
 });
@@ -105,11 +108,11 @@ function getWeatherDescription(weatherCode) {
 function updateAll() {
     updateTime();
     updateDate();
+    autoAdjustBrightness();
 }
 
 updateAll();
 updateWeather();
 
 setInterval(updateAll, 1000);
-
 setInterval(updateWeather, 600000);
